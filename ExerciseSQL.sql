@@ -1,5 +1,6 @@
 
-USE ExerciseSQL
+CREATE ExerciseSQL;
+USE ExerciseSQL;
 --------- Create tables--------------
 CREATE TABLE `user` (
 	`user_id` INT PRIMARY KEY AUTO_INCREMENT, 
@@ -131,7 +132,7 @@ INSERT INTO `order` (`user_id`, `food_id`, `amount`, `code`, `arr_sub_id`) VALUE
 (10, 10, 3, 'ORD010', '5');
 -----------------------------------------------
 -- Tìm 5 người đã like nhà hàng nhiều nhất
-SELECT `like_res`.user_id, `user`.user_id, `user`.full_name,
+SELECT `user`.user_id, `user`.full_name,
 COUNT(`like_res`.user_id) AS `Số lần like`
 FROM `like_res`
 INNER JOIN `user` ON `like_res`.user_id = `user`.user_id
@@ -140,7 +141,7 @@ ORDER BY `Số lần like` DESC
 LIMIT 5
 
 -- Tìm 2 nhà hàng có lượt like nhiều nhất
-SELECT `like_res`.res_id, `restaurant`.res_id, `restaurant`.res_name,
+SELECT `restaurant`.res_id, `restaurant`.res_name,
 COUNT(`like_res`.res_id) AS `Số lần được like`
 FROM `like_res`
 INNER JOIN `restaurant` ON `like_res`.res_id = `restaurant`.res_id
@@ -149,7 +150,7 @@ ORDER BY `Số lần được like` DESC
 LIMIT 2
 
 -- Tim người đặt hàng nhiều nhất
-SELECT `order`.user_id, `user`.user_id, `user`.full_name, COUNT(`order`.user_id) AS `Số lần mua hàng`
+SELECT `user`.user_id, `user`.full_name, COUNT(`order`.user_id) AS `Số lần mua hàng`
 FROM `order`
 INNER JOIN `user` ON `order`.user_id = `user`.user_id
 GROUP BY `order`.user_id
