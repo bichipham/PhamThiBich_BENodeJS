@@ -1,4 +1,5 @@
 import models from "../models/app.model"
+import prisma from "../common/prisma/init.prisma";
 
 export const foodService = {
    create: async function (req) {
