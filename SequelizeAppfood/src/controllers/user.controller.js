@@ -15,6 +15,11 @@ export const userController = {
       const response = responseSuccess(result, `Login successfully`);
       res.status(response.statusCode).json(response);
     },
+    register: async function (req, res, next) {
+      const result = await userService.register(req);
+      const response = responseSuccess(result, `Register successfully`);
+      res.status(response.statusCode).json(response);
+    },          
 
 
 };

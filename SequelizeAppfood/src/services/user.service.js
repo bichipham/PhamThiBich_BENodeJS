@@ -1,4 +1,7 @@
 import prisma from "../common/prisma/init.prisma";
+import bcrypt from "bcrypt";
+import { tokenService } from "./token.service";
+import { BadRequestException } from "../common/helpers/exception.helper";
 
 export const userService = {
   order: async function (req) {
@@ -13,10 +16,31 @@ export const userService = {
     });
     return order;
   },
+  register: async function (req) {
+    const { email, password, fullName } = req.body;
+    const userExits = await prisma.user.findFirst({
+      where: {
+        email: email,
+      },
+    });
+    if (userExits)
+      throw new BadRequestException("Người dùng đã tồn tại, vui lòng đăng nhập");
+
+    const hashPassword = bcrypt.hashSync(password, 10); // mã hóa mật khẩu
+
+    const newUser = await prisma.user.create({
+      data: {
+        email,
+        password: hashPassword,
+        full_name: fullName,
+      },
+    });
+    delete newUser.password;
+    return newUser;
+  },
   login: async function (req) {
     const { email, password } = req.body;
-
-    const userExits = await prisma.user.findUnique({
+    const userExits = await prisma.user.findFirst({
       where: {
         email: email,
       },

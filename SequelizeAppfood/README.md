@@ -46,9 +46,9 @@
 - **Request body:**
 ```json
 {
-"userId": 2,
-"resId": 2,
-"rate": 5
+   "userId": 2,
+   "resId": 2,
+   "rate": 5
 }
 ```
 
