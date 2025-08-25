@@ -24,5 +24,22 @@ export const restaurantController = {
     const result = await restaurantService.getLikeByUser(req);
     const response = responseSuccess(result, `Get like by user successfully`);
     res.status(response.statusCode).json(response);
-  }
+  },
+  addRate : async function (req, res, next) {   
+      const result = await restaurantService.addRate(req);
+      const response = responseSuccess(result, `Rate res successfully`);
+      res.status(response.statusCode).json(response); 
+  },
+  getRateByRes: async function (req, res, next) {
+		console.log("restaurantController -> getRateByRes -> req.query", req.query);
+		const result = await restaurantService.getRateByRes(req);
+		const response = responseSuccess(result, `Get rate by res successfully`);
+		res.status(response.statusCode).json(response);
+  },
+	getRateByUser: async function (req, res, next) {
+		console.log("restaurantController -> getRateByUser -> req.query", req.query);
+		const result = await restaurantService.getRateByUser(req);
+		const response = responseSuccess(result, `Get rate by user successfully`);
+		res.status(response.statusCode).json(response);
+	}
 };

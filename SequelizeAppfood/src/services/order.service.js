@@ -1,21 +1,22 @@
+import prisma from "../common/prisma/init.prisma";
+
 export const orderService = {
-   create: async function (req) {
-      return `This action create`;
-   },
+  create: async function (req) {
+    const { userId, foodId, amount, arrSub } = req.body;
+    const order = await prisma.order.create({
+      data: {
+        user_id: userId,
+        food_id: foodId,
+        amount: amount,
+        date_order: new Date(),
+        sub_orders: arrSub,
+      },
+    });
+    return order;
+  },
 
-   findAll: async function (req) {
-      return `This action returns all order`;
-   },
-
-   findOne: async function (req) {
-      return `This action returns a id: ${req.params.id} order`;
-   },
-
-   update: async function (req) {
-      return `This action updates a id: ${req.params.id} order`;
-   },
-
-   remove: async function (req) {
-      return `This action removes a id: ${req.params.id} order`;
-   },
+  findAll: async function (req) {
+		const orders = await prisma.order.findMany();
+		return orders;
+  },
 };

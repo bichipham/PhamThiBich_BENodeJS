@@ -56,5 +56,43 @@ export const restaurantService = {
 			likes: likes,
 			userId: userId
 		}
+	},
+	addRate: async function (req) {
+		const { userId, resId, rate } = req.body;
+		const newRate = await prisma.rate_res.create({
+			data: {
+				user_id: userId,
+				res_id: resId,
+				amount: rate,
+				date_rate: new Date()
+			}
+		});
+		return newRate;
+	},
+	getRateByRes: async function (req) {
+		const { resId } = req.query;
+		const rates = await prisma.rate_res.findMany({
+			where: {
+				res_id: +resId,
+			},
+		});
+		return {
+			count: rates.length,
+			rates: rates,
+			resId: resId
+		}
+	},
+	getRateByUser: async function (req) {
+		const { userId } = req.query;
+		const rates = await prisma.rate_res.findMany({
+			where: {
+				user_id: +userId,
+			},
+		});
+		return {
+			count: rates.length,
+			rates: rates,
+			userId: userId
+		}
 	}
 };
