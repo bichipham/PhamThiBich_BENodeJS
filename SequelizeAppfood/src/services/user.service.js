@@ -26,7 +26,7 @@ export const userService = {
     if (userExits)
       throw new BadRequestException("Người dùng đã tồn tại, vui lòng đăng nhập");
 
-    const hashPassword = bcrypt.hashSync(password, 10); // mã hóa mật khẩu
+    const hashPassword = await bcrypt.hashSync(password, 10); // mã hóa mật khẩu
 
     const newUser = await prisma.user.create({
       data: {
@@ -55,11 +55,10 @@ export const userService = {
         "Vui lòng đăng nhập bằng mạng xã hội (gmail, facebook), để cập nhật lại mật khẩu mới trong setting"
       );
     }
-
-    const isPassword = bcrypt.compareSync(password, userExits.password); // true
+    const isPassword = await bcrypt.compareSync(password, userExits.password); // true
     if (!isPassword) throw new BadRequestException("Mật khẩu không chính xác");
 
-    const tokens = tokenService.createTokens(userExits.id);
+    const tokens = tokenService.createTokens(userExits.user_id);
 
     console.log({ email, password });
 

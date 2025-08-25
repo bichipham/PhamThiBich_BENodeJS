@@ -12,9 +12,9 @@ export const protect = async (req, res, next) => {
 
     const { userId } = tokenService.verifyAccesToken(accessToken);
 
-    const user = await prisma.users.findUnique({
+    const user = await prisma.user.findUnique({
         where: {
-            id: userId,
+            user_id: +userId,
         },
     });
 

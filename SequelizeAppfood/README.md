@@ -42,6 +42,7 @@
 **GET** `api/restaurant/like-by-user/1`
 
 ### 4. Rate Restaurant
+Use api user/register and user/login to get accessToken
 **POST** `api/restaurant/rate`
 - **Request body:**
 ```json
@@ -59,6 +60,7 @@
 **GET** `api/restaurant/rate-by-res/1`
 
 ### 7. Order By User
+Use api user/register and user/login to get accessToken
 **POST** `api/user/order`
 ```json
 {
