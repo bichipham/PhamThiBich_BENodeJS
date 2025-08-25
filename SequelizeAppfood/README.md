@@ -35,38 +35,34 @@
 ```
 
 ### 2. Get Like By Restaurant
-**POST** `api/restaurant/like-by-res/1`
+**GET** `api/restaurant/like-by-res/1`
 
 
 ### 3. Get Like By User
-**POST** `api/restaurant/like-by-user/1`
+**GET** `api/restaurant/like-by-user/1`
 
+### 4. Rate Restaurant
+**POST** `api/restaurant/rate`
+- **Request body:**
+```json
 {
-   "message": "Get like by user successfully",
-    "data": {
-			"count": 3,
-			"likes": [
-				{
-					"id": 1,
-					"user_id": 1,
-					"res_id": 1,
-					"isLike": true
-				},
-				{
-					"id": 4,
-					"user_id": 1,
-					"res_id": 1,
-					"isLike": true
-				},
-				{
-					"id": 7,
-					"user_id": 1,
-					"res_id": 2,
-					"isLike": true
-				}
-			],
-			"userId": "1"
-	}
+"userId": 2,
+"resId": 2,
+"rate": 5
 }
 ```
 
+### 5. Get Rate By User
+**GET** `api/restaurant/rate-by-user/1`
+
+### 6. Get Rate By Restaurent
+**GET** `api/restaurant/like-by-res/1`
+
+### 7. Order By User
+**POST** `api/user/order`
+```json
+{
+    "userId": 1,
+    "foodId": 1,
+    "amount": 1
+}
