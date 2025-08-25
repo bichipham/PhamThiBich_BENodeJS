@@ -30,31 +30,31 @@ export const restaurantService = {
     }
   },
 	getLikeByRes: async function (req) {
-		const { resId } = req.query;
+		const { id } = req.params;
 		const likes = await prisma.like_res.findMany({
 			where: {
-				res_id: +resId,
+				res_id: +id,
 				isLike: true,
 			},
 		});
 		return {
 			count: likes.length,
 			likes: likes,
-			resId: resId
+			resId: id
 		}
 	},
 	getLikeByUser: async function (req) {
-		const { userId } = req.query;
+		const { id } = req.params;
 		const likes = await prisma.like_res.findMany({
 			where: {
-				user_id: +userId,
+				user_id: +id,
 				isLike: true,
 			},
 		});
 		return {
 			count: likes.length,
 			likes: likes,
-			userId: userId
+			userId: id
 		}
 	},
 	addRate: async function (req) {
@@ -70,29 +70,29 @@ export const restaurantService = {
 		return newRate;
 	},
 	getRateByRes: async function (req) {
-		const { resId } = req.query;
+		const { id } = req.params;
 		const rates = await prisma.rate_res.findMany({
 			where: {
-				res_id: +resId,
+				res_id: +id,
 			},
 		});
 		return {
 			count: rates.length,
 			rates: rates,
-			resId: resId
+			resId: id
 		}
 	},
 	getRateByUser: async function (req) {
-		const { userId } = req.query;
+		const { id } = req.params;
 		const rates = await prisma.rate_res.findMany({
 			where: {
-				user_id: +userId,
+				user_id: +id,
 			},
 		});
 		return {
 			count: rates.length,
 			rates: rates,
-			userId: userId
+			userId: id
 		}
 	}
 };

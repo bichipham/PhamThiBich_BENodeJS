@@ -34,16 +34,39 @@
 }
 ```
 
-- **Response (nếu like thành công):**
-```json
+### 2. Get Like By Restaurant
+**POST** `api/restaurant/like-by-res/1`
+
+
+### 3. Get Like By User
+**POST** `api/restaurant/like-by-user/1`
+
 {
-  "message": "ToggleLike res successfully",
-  "data": {
-    "id": 11,
-    "user_id": 8,
-    "res_id": 2,
-    "isLike": true
-  }
+   "message": "Get like by user successfully",
+    "data": {
+			"count": 3,
+			"likes": [
+				{
+					"id": 1,
+					"user_id": 1,
+					"res_id": 1,
+					"isLike": true
+				},
+				{
+					"id": 4,
+					"user_id": 1,
+					"res_id": 1,
+					"isLike": true
+				},
+				{
+					"id": 7,
+					"user_id": 1,
+					"res_id": 2,
+					"isLike": true
+				}
+			],
+			"userId": "1"
+	}
 }
 ```
 

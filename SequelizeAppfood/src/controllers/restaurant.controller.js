@@ -14,13 +14,11 @@ export const restaurantController = {
     res.status(response.statusCode).json(response);
   },
   getLikeByRes: async function (req, res, next) {
-    console.log("restaurantController -> getLikeByRes -> req.query", req.query);
     const result = await restaurantService.getLikeByRes(req);
     const response = responseSuccess(result, `Get like by res successfully`);
     res.status(response.statusCode).json(response);
   },
   getLikeByUser: async function (req, res, next) {
-    console.log("restaurantController -> getLikeByUser -> req.query", req.query);
     const result = await restaurantService.getLikeByUser(req);
     const response = responseSuccess(result, `Get like by user successfully`);
     res.status(response.statusCode).json(response);
@@ -31,13 +29,11 @@ export const restaurantController = {
       res.status(response.statusCode).json(response); 
   },
   getRateByRes: async function (req, res, next) {
-		console.log("restaurantController -> getRateByRes -> req.query", req.query);
 		const result = await restaurantService.getRateByRes(req);
 		const response = responseSuccess(result, `Get rate by res successfully`);
 		res.status(response.statusCode).json(response);
   },
 	getRateByUser: async function (req, res, next) {
-		console.log("restaurantController -> getRateByUser -> req.query", req.query);
 		const result = await restaurantService.getRateByUser(req);
 		const response = responseSuccess(result, `Get rate by user successfully`);
 		res.status(response.statusCode).json(response);

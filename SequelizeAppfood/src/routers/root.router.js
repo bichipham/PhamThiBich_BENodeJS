@@ -1,12 +1,10 @@
 import express from "express";
-import foodRouter from "./food.router";
 import restaurantRouter from "./restaurant.router";
-import orderRouter from "./order.router";
+import userRouter from "./user.router";
 
 const rootRouter = express.Router();
-rootRouter.use("/food", foodRouter);
 rootRouter.use("/restaurant", restaurantRouter);
-rootRouter.use("/order", orderRouter);
+rootRouter.use("/user", userRouter);
 
 
 export default rootRouter;
