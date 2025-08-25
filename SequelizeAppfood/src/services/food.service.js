@@ -1,10 +1,14 @@
+import models from "../models/app.model"
+
 export const foodService = {
    create: async function (req) {
       return `This action create`;
    },
 
    findAll: async function (req) {
-      return `This action returns all food`;
+      const allFood = await models.food.findAll();
+			console.log(allFood);
+      return allFood
    },
 
    findOne: async function (req) {
