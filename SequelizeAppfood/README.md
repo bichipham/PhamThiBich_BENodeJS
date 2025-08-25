@@ -56,7 +56,7 @@
 **GET** `api/restaurant/rate-by-user/1`
 
 ### 6. Get Rate By Restaurent
-**GET** `api/restaurant/like-by-res/1`
+**GET** `api/restaurant/rate-by-res/1`
 
 ### 7. Order By User
 **POST** `api/user/order`
