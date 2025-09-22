@@ -1,0 +1,58 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Comments {
+  id      Int       @id @default(autoincrement())
+  userId  Int
+  imageId Int
+  date    DateTime? @default(now()) @db.DateTime(0)
+  content String    @db.Text
+  Users   Users     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Comments_ibfk_1")
+  Images  Images    @relation(fields: [imageId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Comments_ibfk_2")
+
+  @@index([imageId], map: "imageId")
+  @@index([userId], map: "userId")
+}
+
+model Images {
+  id              Int               @id @default(autoincrement())
+  name            String            @db.VarChar(100)
+  path            String            @db.VarChar(255)
+  description     String?           @db.VarChar(255)
+  userId          Int
+  Comments        Comments[]
+  Users           Users             @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Images_ibfk_1")
+  SaveImageRecord SaveImageRecord[]
+
+  @@index([userId], map: "userId")
+}
+
+model SaveImageRecord {
+  userId  Int
+  imageId Int
+  date    DateTime? @default(now()) @db.DateTime(0)
+  Users   Users     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "SaveImageRecord_ibfk_1")
+  Images  Images    @relation(fields: [imageId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "SaveImageRecord_ibfk_2")
+
+  @@id([userId, imageId])
+  @@index([imageId], map: "imageId")
+}
+
+model Users {
+  id              Int               @id @default(autoincrement())
+  email           String            @unique(map: "email") @db.VarChar(100)
+  password        String            @db.VarChar(255)
+  name            String            @db.VarChar(100)
+  age             Int?
+  avatar          String?           @db.VarChar(255)
+  Comments        Comments[]
+  Images          Images[]
+  SaveImageRecord SaveImageRecord[]
+}
