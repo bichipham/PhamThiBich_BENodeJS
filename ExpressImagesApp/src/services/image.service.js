@@ -41,6 +41,8 @@ export const imageService = {
     };
   },
   findOne: async function (req) {
+   console.log('!!!!!! find one servide');
+   
     const imageInfo = await prisma.images.findUnique({
       where: { id: +req?.params?.id },
       include: {
@@ -51,5 +53,25 @@ export const imageService = {
     });
 
     return imageInfo;
+  },
+  getComment: async function (req) {
+    const imageId = +req?.params?.id
+    console.log("imageId", imageId);
+    const comments = await prisma.comments.findMany({
+      where: { imageId },
+      orderBy: { date: "desc" }, // sắp xếp mới nhất trước
+      include: {
+        Users: {
+          // lấy user info của từng comment
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            avatar: true,
+          },
+        },
+      },
+    });
+    return comments;
   },
 };

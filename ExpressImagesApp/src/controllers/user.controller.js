@@ -31,4 +31,9 @@ export const userController = {
     const response = responseSuccess(result, `Get all user image successfully`);
     res.status(response.statusCode).json(response);
   },
+  comment: async function (req, res, next) {
+    const result = await userService.comment(req);
+    const response = responseSuccess(result, `User comment successfully`);
+    res.status(response.statusCode).json(response);
+  },
 };

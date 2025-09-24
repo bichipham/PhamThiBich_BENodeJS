@@ -11,6 +11,8 @@ userRouter.post('/register', userController.register);
 userRouter.get('/get-info', protect, userController.getInfo);
 userRouter.post("/upload-image", protect, uploadCloud.single("image"), userController.uploadImage);
 userRouter.get('/:id/images', protect, userController.getAllUserImage);
+userRouter.post('/comment', protect, userController.comment);
+
 
 
 export default userRouter;

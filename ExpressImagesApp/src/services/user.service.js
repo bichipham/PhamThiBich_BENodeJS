@@ -66,7 +66,7 @@ export const userService = {
 
     const user = req.user;
 
-   // đưa hình lên cloud
+    // đưa hình lên cloud
     const byteArrayBuffer = req.file.buffer;
     const uploadResult = await new Promise((resolve, reject) => {
       cloudinary.uploader
@@ -79,26 +79,24 @@ export const userService = {
         .end(byteArrayBuffer);
     });
 
-     const { name, description } = req.body;
+    const { name, description } = req.body;
     await prisma.images.create({
       data: {
         name: name,
         path: uploadResult.secure_url,
         description: description,
-        userId: +user?.id
-      }
-    })
+        userId: +user?.id,
+      },
+    });
     return true;
   },
   getAllUserImage: async function (req) {
     const userId = parseInt(req.params.id);
-    if (userId !== req.user.id) // check permission
-    {
-        throw new BadRequestException(
-        "Không có quyền truy cập"
-      );
+    if (userId !== req.user.id) {
+      // check permission
+      throw new BadRequestException("Không có quyền truy cập");
     }
-     const userRes = await prisma.users.findUnique({
+    const userRes = await prisma.users.findUnique({
       where: { id: userId },
       include: {
         Images: {
@@ -112,7 +110,20 @@ export const userService = {
       },
     });
     return {
-      images: userRes.Images
-    }
-  }
+      images: userRes.Images,
+    };
+  },
+  comment: async function (req) {
+    const { content, imageId } = req.body || {};
+    const user = req?.user || {};
+     const comment = await prisma.comments.create({
+      data: {
+        content,
+        userId: user?.id,
+        imageId,
+        date: new Date() // 👈 Nếu muốn ghi đè thì có thể thêm
+      },
+    })
+    return comment;
+  },
 };
