@@ -2,6 +2,7 @@ import prisma from "../common/prisma/init.prisma";
 import bcrypt from "bcrypt";
 import { tokenService } from "./token.service";
 import { BadRequestException } from "../common/helpers/exception.helper";
+import cloudinary from "../common/cloudinary/init.cloudinary";
 
 export const userService = {
   register: async function (req) {
@@ -59,7 +60,6 @@ export const userService = {
     return req.user;
   },
   uploadImage: async function (req) {
-    console.log("file",req);
     if (!req.file) {
       throw new BadRequestException("Not found file");
     }
@@ -79,18 +79,40 @@ export const userService = {
         .end(byteArrayBuffer);
     });
 
-    
-    console.log(uploadResult.public_id);
-    // await prisma.images.create({
-    //   data: {
-    //     name: imageName,
-    //     path: uploadResult.public_id,
-    //     description: 
-    //     userId: req.user.id
-    //   }
-    // })
-
-    console.log({ uploadResult });
+     const { name, description } = req.body;
+    await prisma.images.create({
+      data: {
+        name: name,
+        path: uploadResult.secure_url,
+        description: description,
+        userId: +user?.id
+      }
+    })
     return true;
   },
+  getAllUserImage: async function (req) {
+    const userId = parseInt(req.params.id);
+    if (userId !== req.user.id) // check permission
+    {
+        throw new BadRequestException(
+        "Không có quyền truy cập"
+      );
+    }
+     const userRes = await prisma.users.findUnique({
+      where: { id: userId },
+      include: {
+        Images: {
+          select: {
+            id: true,
+            name: true,
+            path: true,
+            description: true,
+          },
+        },
+      },
+    });
+    return {
+      images: userRes.Images
+    }
+  }
 };

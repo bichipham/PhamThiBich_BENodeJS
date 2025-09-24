@@ -1,24 +1,55 @@
+import prisma from "../common/prisma/init.prisma";
+
 export const imageService = {
-   create: async function (req) {
-      return `This action create`;
-   },
+  findAll: async function (req) {
+    let { page, size, keyword } = req.query;
+    page = +page > 0 ? +page : 1;
+    size = +size > 0 ? +size : 1;
 
-   findAll: async function (req) {
-      let {page} = reg || {};
-   
-      return `This action returns all image`;
-   },
+    const index = (page - 1) * size;
 
-   findOne: async function (req) {
-      let {page} = reg || {}
-      return `This action returns a id: ${req.params.id} image`;
-   },
+    const imagesPromise = prisma.images.findMany({
+      // SQL: OFFSET
+      skip: index,
+      // SQL: LIMIT
+      take: size,
+      where: keyword
+        ? {
+            name: {
+              contains: keyword,
+            },
+          }
+        : {}, // nếu undefined thì không filter
+    });
 
-   update: async function (req) {
-      return `This action updates a id: ${req.params.id} image`;
-   },
+    // đếm số lượng row hàng trong table
+    const totalItemPromise = prisma.images.count();
 
-   remove: async function (req) {
-      return `This action removes a id: ${req.params.id} image`;
-   },
+    const [images, totalItem] = await Promise.all([
+      imagesPromise,
+      totalItemPromise,
+    ]);
+
+    const totalPage = Math.ceil(totalItem / size);
+
+    return {
+      page,
+      size,
+      totalItem: totalItem,
+      totalPage: totalPage,
+      items: images || [],
+    };
+  },
+  findOne: async function (req) {
+    const imageInfo = await prisma.images.findUnique({
+      where: { id: +req?.params?.id },
+      include: {
+        Users: {
+          select: { id: true, name: true, email: true, avatar: true },
+        },
+      },
+    });
+
+    return imageInfo;
+  },
 };

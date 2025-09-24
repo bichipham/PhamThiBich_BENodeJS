@@ -1,12 +1,10 @@
 import express from 'express';
+import { imageController } from '../controllers/image.controller';
 
 const imageRouter = express.Router();
 
 // Tạo route CRUD
-imageRouter.post('/', imageController.create);
 imageRouter.get('/', imageController.findAll);
 imageRouter.get('/:id', imageController.findOne);
-imageRouter.patch('/:id', imageController.update);
-imageRouter.delete('/:id', imageController.remove);
 
 export default imageRouter;
