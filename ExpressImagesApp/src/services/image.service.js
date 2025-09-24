@@ -4,10 +4,13 @@ export const imageService = {
    },
 
    findAll: async function (req) {
+      let {page} = reg || {};
+   
       return `This action returns all image`;
    },
 
    findOne: async function (req) {
+      let {page} = reg || {}
       return `This action returns a id: ${req.params.id} image`;
    },
 

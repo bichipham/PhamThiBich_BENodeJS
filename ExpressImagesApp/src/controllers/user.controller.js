@@ -2,7 +2,6 @@ import { responseSuccess } from "../common/helpers/response.helper";
 import { tokenService } from "../services/token.service";
 import { userService } from "../services/user.service";
 
-
 export const userController = {
   login: async function (req, res, next) {
     const result = await userService.login(req);
@@ -13,8 +12,18 @@ export const userController = {
     const result = await userService.register(req);
     const response = responseSuccess(result, `Register successfully`);
     res.status(response.statusCode).json(response);
-  },          
-  saveImage:  async function (req, res, next) {
-    res.status(response.statusCode).json('response');
-  },          
+  },
+  saveImage: async function (req, res, next) {
+    res.status(response.statusCode).json("response");
+  },
+  uploadImage: async function (req, res, next) {
+    const result = await userService.uploadImage(req);
+    const response = responseSuccess(result, `Upload Image successfully`);
+    res.status(response.statusCode).json(response);
+  },
+  getInfo: async function (req, res, next) {
+    const result = await userService.getInfo(req);
+    const response = responseSuccess(result, `Get Info successfully`);
+    res.status(response.statusCode).json(response);
+  },
 };
