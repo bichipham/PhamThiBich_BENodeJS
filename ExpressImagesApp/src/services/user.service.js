@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import { tokenService } from "./token.service";
 import { BadRequestException } from "../common/helpers/exception.helper";
 import { uploadCloudDinary } from "../common/cloudinary/upload.cloudinary";
+import cloudinary from "../common/cloudinary/init.cloudinary";
 
 export const userService = {
   register: async function (req) {
@@ -208,13 +209,19 @@ export const userService = {
         where: { email: userEmail },
         data: {
           name,
-          age,
+          age: age ? +age : null,
         },
       });
-      updatedUser.delete("password");
+      delete updatedUser.password;
       return updatedUser;
     }
-
+   // xoaa avatar cu tren cloudinary
+   const avartarUrl = req?.user?.avatar; // Lấy URL avatar hiện tại của người dùng
+   if (avartarUrl) {
+     const publicId = avartarUrl.split('/').pop().split('.')[0]; // Lấy public_id từ URL
+     await cloudinary.uploader.destroy(`socialapp/avatars/${publicId}`);
+   }
+   // upload avatar moi len cloudinary
    const uploadCloudRes = await uploadCloudDinary(req.file, "socialapp/avatars");
    const updatedUser = await prisma.users.update({
       where: { email: userEmail },
@@ -224,7 +231,7 @@ export const userService = {
         avatar: uploadCloudRes.secure_url,
       },
     });
-    updatedUser.delete("password");
+    delete updatedUser.password;
     return updatedUser;
   },
 };
