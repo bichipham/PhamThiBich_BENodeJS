@@ -11,7 +11,11 @@ userRouter.post('/register', userController.register);
 userRouter.get('/get-info', protect, userController.getInfo);
 userRouter.post("/upload-image", protect, uploadCloud.single("image"), userController.uploadImage);
 userRouter.get('/:id/images', protect, userController.getAllUserImage);
+userRouter.delete('/delete-image/:id', protect, userController.deleteImage);
 userRouter.post('/comment', protect, userController.comment);
+userRouter.post('/save-image/:id', protect, userController.saveImage);
+userRouter.get('/save-image', protect, userController.getSavedImage);
+userRouter.post('/update-profile', protect, uploadCloud.single("avatar"),userController.updateProfile);
 
 
 

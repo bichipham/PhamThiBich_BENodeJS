@@ -38,6 +38,7 @@ model SaveImageRecord {
   userId  Int
   imageId Int
   date    DateTime? @default(now()) @db.DateTime(0)
+  isSave  Boolean   @default(true)
   Users   Users     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "SaveImageRecord_ibfk_1")
   Images  Images    @relation(fields: [imageId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "SaveImageRecord_ibfk_2")
 

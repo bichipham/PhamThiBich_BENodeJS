@@ -36,4 +36,25 @@ export const userController = {
     const response = responseSuccess(result, `User comment successfully`);
     res.status(response.statusCode).json(response);
   },
+  deleteImage: async function (req, res, next) {
+    const result = await userService.deleteImage(req);
+    const response = responseSuccess(result, `Delete image successfully`);
+    res.status(response.statusCode).json(response);
+  },
+  saveImage: async function (req, res, next) {
+    const result = await userService.saveImage(req);
+    const response = responseSuccess(result, `Save image successfully`);
+    res.status(response.statusCode).json(response);
+  },
+  getSavedImage: async function (req, res, next) {
+    const result = await userService.getSavedImage(req);
+    const response = responseSuccess(result, `Get saved image successfully`);
+    res.status(response.statusCode).json(response);
+  },
+  updateProfile: async function (req, res, next) {
+    const result = await userService.updateProfile(req);
+    const response = responseSuccess(result, `Update profile successfully`);
+    res.status(response.statusCode).json(response);
+  }      
+
 };

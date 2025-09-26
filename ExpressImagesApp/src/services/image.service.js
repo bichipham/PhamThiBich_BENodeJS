@@ -40,9 +40,7 @@ export const imageService = {
       items: images || [],
     };
   },
-  findOne: async function (req) {
-   console.log('!!!!!! find one servide');
-   
+  findOne: async function (req) {   
     const imageInfo = await prisma.images.findUnique({
       where: { id: +req?.params?.id },
       include: {
@@ -74,4 +72,18 @@ export const imageService = {
     });
     return comments;
   },
+  getSavedByUser: async function (req) {
+    const imageId = +req?.params?.id;
+    const userId = req?.user?.id;
+
+    const savedRecord = await prisma.saveImageRecord.findFirst({
+      where: {
+        imageId,
+        userId,
+        isSave: true,
+      },
+    });
+
+    return {isSave : !!savedRecord}; // trả về true nếu tồn tại, false nếu không
+  }
 };

@@ -25,4 +25,12 @@ export const imageController = {
     );
     res.status(response.statusCode).json(response);
   },
+  getSavedByUser: async function (req, res, next) {
+    const result = await imageService.getSavedByUser(req);
+    const response = responseSuccess(
+      result,
+      `Get is saved by user successfully`
+    );
+    res.status(response.statusCode).json(response);
+  }
 };

@@ -2,7 +2,7 @@ import prisma from "../common/prisma/init.prisma";
 import bcrypt from "bcrypt";
 import { tokenService } from "./token.service";
 import { BadRequestException } from "../common/helpers/exception.helper";
-import cloudinary from "../common/cloudinary/init.cloudinary";
+import { uploadCloudDinary } from "../common/cloudinary/upload.cloudinary";
 
 export const userService = {
   register: async function (req) {
@@ -66,24 +66,13 @@ export const userService = {
 
     const user = req.user;
 
-    // đưa hình lên cloud
-    const byteArrayBuffer = req.file.buffer;
-    const uploadResult = await new Promise((resolve, reject) => {
-      cloudinary.uploader
-        .upload_stream({ folder: "socialapp" }, (error, uploadResult) => {
-          if (error) {
-            return reject(error);
-          }
-          return resolve(uploadResult);
-        })
-        .end(byteArrayBuffer);
-    });
+   const uploadCloudRes = await uploadCloudDinary(req.file, "socialapp");
 
     const { name, description } = req.body;
     await prisma.images.create({
       data: {
         name: name,
-        path: uploadResult.secure_url,
+        path: uploadCloudRes.secure_url,
         description: description,
         userId: +user?.id,
       },
@@ -125,5 +114,117 @@ export const userService = {
       },
     })
     return comment;
+  },
+  deleteImage: async function (req) {
+    const imageId = +req?.params?.id;
+    const userId = req?.user?.id;
+
+    const image = await prisma.images.findUnique({
+      where: { id: imageId },
+    });
+    if (!image) {
+      throw new BadRequestException("Image not found");
+    }
+    if (image.userId !== userId) {
+      throw new BadRequestException("You do not have permission to delete this image");
+    }
+
+    // Xoá các comment liên quan đến hình ảnh
+    await prisma.comments.deleteMany({
+      where: { imageId: imageId },
+    });
+
+    //xoá trên cloudinary
+    const publicId = image.path.split('/').pop().split('.')[0]; // Lấy public_id từ URL
+    await cloudinary.uploader.destroy(`socialapp/${publicId}`);
+
+    // Xoá hình ảnh
+    await prisma.images.delete({
+      where: { id: imageId },
+    });
+
+    return true;
+  },
+  saveImage: async function (req) {
+    const imageId = +req?.params?.id;
+    const userId = req?.user?.id;
+
+    const image = await prisma.images.findUnique({
+      where: { id: imageId },
+    });
+    if (!image) {
+      throw new BadRequestException("Image not found");
+    }
+
+    const existingSavedImage = await prisma.saveImageRecord.findFirst({
+      where: {
+        userId: userId,
+        imageId: imageId,
+      },
+    });
+
+    if (existingSavedImage) {
+      // lưu rồi thì update isSave
+      await prisma.saveImageRecord.update({
+        where: { userId_imageId: { userId, imageId } },
+        data: { isSave: !existingSavedImage.isSave },
+      });
+      return true;
+    }
+
+    const savedImage = await prisma.saveImageRecord.create({
+      data: {
+        userId: userId,
+        imageId: imageId,
+        date: new Date(),
+        isSave: true,
+      },
+    });
+
+    return savedImage;
+  },
+  getSavedImage: async function (req) {
+    const userId = req?.user?.id;
+
+    const savedImages = await prisma.saveImageRecord.findMany({
+      where: { userId: userId, isSave: true },
+      include: {
+        Images: true, // bao gồm thông tin hình ảnh
+      },
+      orderBy: {
+        date: 'desc', // sắp xếp theo ngày lưu gần nhất
+      },
+    });
+    return savedImages;
+  },
+  updateProfile: async function (req) {
+    const userEmail = req?.user?.email;
+    const avatar = req?.file;
+    const { name, age } = req.body;
+
+    if (!avatar) {
+      // update profile without avatar
+      const updatedUser = await prisma.users.update({
+        where: { email: userEmail },
+        data: {
+          name,
+          age,
+        },
+      });
+      updatedUser.delete("password");
+      return updatedUser;
+    }
+
+   const uploadCloudRes = await uploadCloudDinary(req.file, "socialapp/avatars");
+   const updatedUser = await prisma.users.update({
+      where: { email: userEmail },
+      data: {
+        name,
+        age: age ? +age : null,
+        avatar: uploadCloudRes.secure_url,
+      },
+    });
+    updatedUser.delete("password");
+    return updatedUser;
   },
 };
