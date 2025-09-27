@@ -1,0 +1,21 @@
+name: ci
+
+on:
+    push:
+        branches: ["main"]
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Đăng nhập docker hub
+              run: docker login -u bichipham -p ${{secrets.DOCKER_PASS}}
+
+            - name: Build image
+              run: docker build -t bichipham/img-be_socialapp:latest .
+
+            - name: Push Image lên docker hub
+              run: docker push bichipham/img-be_socialapp:latest
