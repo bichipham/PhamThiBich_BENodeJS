@@ -1,0 +1,16 @@
+services:
+  BE:
+    image: bichipham/img-be_socialapp:latest
+    container_name: con-be_socialapp
+    ports:
+      - 3070:3069
+    env_file:
+      - .env
+
+  DB:
+    image: mysql
+    container_name: con-db_socialapp
+    ports:
+      - 3307:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=1234
